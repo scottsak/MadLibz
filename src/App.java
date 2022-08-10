@@ -76,9 +76,17 @@ public class App {
                 finalMadLibz.append(((ArrayList) sentenceObject).get(sentenceAmount-2));
                 sc.close();
 
+                //create the underline
+                StringBuilder underline = new StringBuilder();
+
                 // Prints the title of the madLibz
                 System.out.println(madLibz.get("title"));
-                System.out.println("------------------------");
+                for(int i=0; i<((String) madLibz.get("title")).length(); i++){
+                    underline.append("-");
+                }
+                System.out.println(underline);
+
+                //print the final madLibz
                 System.out.println(finalMadLibz);
 
             }
