@@ -41,9 +41,14 @@ public class App {
                 //run through the data 
                 JSONParser parse = new JSONParser();
                 Object obj = parse.parse(String.valueOf(informationString));
-                JSONObject madLibz = (JSONObject) ((ArrayList) obj).get(0);
+                JSONArray array = new JSONArray();
+                array.add(obj);
+                JSONObject madLibz = (JSONObject) array.get(0);
+
                 Object blankObjects = parse.parse(String.valueOf(madLibz.get("blanks")));
+                
                 int blanksSize = ((ArrayList) blankObjects).size();
+
 
                 Scanner sc = new Scanner(System.in); 
 
