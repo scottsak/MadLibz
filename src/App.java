@@ -2,6 +2,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,14 +10,11 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World");
         try {
-            // Public API:
-            // https://www.metaweather.com/api/location/search/?query=<CITY>
-            // https://www.metaweather.com/api/location/44418/
 
+            // connect to Madlibz API
             URL url = new URL(
-                    "https://api.openweathermap.org/data/2.5/weather?q=London&units=imperial&appid=b0268dbde60ffcf3ed5c0afbeffe1df2");
+                    "http://madlibz.herokuapp.com/api/random?minlength=5&maxlength=25");
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -30,6 +28,7 @@ public class App {
                 throw new RuntimeException("HttpResponseCode: " + responseCode);
             } else {
 
+                // Creates a string for the data
                 StringBuilder informationString = new StringBuilder();
                 Scanner scanner = new Scanner(url.openStream());
 
@@ -39,28 +38,43 @@ public class App {
                 // Close the scanner
                 scanner.close();
 
-                System.out.println(informationString);
-
-                System.out.println("---------------------");
-
-                // JSON simple library Setup with Maven is used to convert strings to JSON
+                //run through the data 
                 JSONParser parse = new JSONParser();
                 Object obj = parse.parse(String.valueOf(informationString));
-                System.out.println(obj);
-                JSONArray array = new JSONArray();
-                array.add(obj);
-                System.out.println("---------------------");
-                JSONObject weather = (JSONObject) array.get(0);
-                // System.out.println(weather);
+                JSONObject madLibz = (JSONObject) ((ArrayList) obj).get(0);
+                Object blankObjects = parse.parse(String.valueOf(madLibz.get("blanks")));
+                int blanksSize = ((ArrayList) blankObjects).size();
 
-                // Get the first JSON object in the JSON array
-                System.out.println(weather.get("name"));
+                Scanner sc = new Scanner(System.in); 
+
+                String[] userInputs = new String[blanksSize];
+
+                //gets user input for all the blanks
+                for(int i=0; i< blanksSize; i++){
+                    System.out.println("Enter "+((ArrayList) blankObjects).get(i));
+                    String x = sc.nextLine();
+                    userInputs[i] = x;
+                }
+                
+                Object sentenceObject = parse.parse(String.valueOf(madLibz.get("value")));
+                
+                int sentenceAmount = ((ArrayList) sentenceObject).size();
+
+                StringBuilder finalMadLibz = new StringBuilder();
 
                 
+                //creates the final output
+                for(int i=0; i < blanksSize; i++){
+                    finalMadLibz.append(((ArrayList) sentenceObject).get(i));
+                    finalMadLibz.append(userInputs[i]);
+                }
+                finalMadLibz.append(((ArrayList) sentenceObject).get(sentenceAmount-2));
+                sc.close();
 
-                // JSONObject countryData = (JSONObject) dataObject.get(0);
-
-                // System.out.println(countryData.get("woeid"));
+                // Prints the title of the madLibz
+                System.out.println(madLibz.get("title"));
+                System.out.println("------------------------");
+                System.out.println(finalMadLibz);
 
             }
         } catch (Exception e) {
