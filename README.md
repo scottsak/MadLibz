@@ -3,7 +3,7 @@
 Allows users to generate a story by inputting random nouns, verbs, or adjectives. 
 
 
-##Instructions to Play
+## Instructions to Play
 
 1. Clone the repository
 
